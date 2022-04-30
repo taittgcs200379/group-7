@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{%load mathfilters%}
+
+{%block content%}
+<table class="table">
+    <tr>
+        <th>No.</th>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+        
+    </tr>
+
+    
+
+    {% for item in cart_items %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{item.Store.name}}</td>
+        <td>{{item.Store.price}} $</td>
+        <td> 
+            <form action="" class="input-group mb-3" method="POST">
+            {%csrf_token%}
+            <input type="hidden" value="{{item.Store.id}}" name="store_id">
+            <input type="number"value="{{item.Quantity}}" name="quantity" class="form-control">
+            <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </td>
+        <td>{{item.Quantity|mul:item.Store.price}} $</td>  
+        <td>
+           
+            <a href="/cart/remove/{{item.Store.id}}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+
+    </tr> 
+
+  
+   
+    {% endfor %}
+
+</table>    
+{% if not cart_items  %}
+<a href="/shop/store/" class="btn btn-danger btn-samll"> Continue shopping</a>
+{% else %}
+<a href="/cart/order_success" class="btn btn-primary btn-samll">Order</a>
+{%endif%}
+{% endblock content%}
