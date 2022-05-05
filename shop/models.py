@@ -11,10 +11,10 @@ class Category(models.Model):
 
 
 class Store(models.Model):
-    name=models.CharField(max_length=20)
+    name=models.CharField(max_length=1000)
     image = models.TextField()
     description = models.TextField()
-    code = models.CharField(max_length=20)
+    code = models.CharField(max_length=1000)
     date = models.DateField()
     price= models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

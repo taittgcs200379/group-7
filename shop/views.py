@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from asyncio.windows_events import NULL
+
 from .models import Category, Store
 from .forms import CategoryForm, StoreForm
 
@@ -23,6 +24,7 @@ def category_delete(request, id):
 
 
 def category_add(request):
+    store=get_object_or_404(Category)
     form = CategoryForm(request.POST or None)
 
     if form.is_valid():
@@ -112,11 +114,10 @@ def store_add(request):
 
 def store_edit(request, id):
     store = Store.objects.get(id=id)
-    form = StoreForm(request.POST or None)
+    form = StoreForm(request.POST or None, instance=store)
 
     if form.is_valid():
        
-      
        store.image = request.POST["image"]
        store.description = request.POST["description"]
        store.code = request.POST["code"]

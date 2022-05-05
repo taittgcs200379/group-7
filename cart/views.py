@@ -1,29 +1,27 @@
 
-
 from datetime import datetime
-
 from django.shortcuts import redirect, render
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from shop.views import store_index
+
 from .models import CartItems, Cart, Order, Orderitems
 from shop.models import Store
 
 
-# Create your views here.from shop.models import Store
-
-def add_to_cart(request, store_id):
-    cart = Cart.objects.get(id=1)
+# Create your views here.
+@login_required(login_url="/user/join/login")
+def add_cart(request, store_id):
+    user=request.user
+    cart = Cart.objects.get(User=user)
     store = Store.objects.get(id=store_id)
+  
 
     cart_item= CartItems.objects.filter(Store=store, Cart=cart).first()
     if cart_item is None:    
-       store=Store.objects.get( id = store_id )
-
-
-       cart = Cart.objects.get(id=1)
        cart_item= CartItems()
        cart_item.Store=store
-       cart_item.Cart=cart
+       cart_item.Cart=cart 
        cart_item.Quantity= 1
        cart_item.save() 
     else:
@@ -34,7 +32,8 @@ def add_to_cart(request, store_id):
 
 
 def remove(request, store_id):
-     cart = Cart.objects.get(id=1)
+     user=request.user
+     cart = Cart.objects.get(User=user)
      store = Store.objects.get(id=store_id)
      cart_item= CartItems.objects.filter(Store=store, Cart=cart).first()
 
@@ -43,19 +42,21 @@ def remove(request, store_id):
 
      return redirect(show_cart)   
 
-
+@login_required(login_url="/user/join/login")
 def show_cart(request):
+   
    if request.method =="POST":
-      cart = Cart.objects.get(id=1)
+      user=request.user
+      cart = Cart.objects.get(User=user)
       store = Store.objects.get(id = request.POST["store_id"])
-
-      cart_item= CartItems.objects.filter(Store=store, Cart=cart).first()
+      cart_item= CartItems.objects.filter(Cart=cart, Store=store).first()
 
       if cart_item is not None:
          cart_item.Quantity=request.POST["quantity"]
          cart_item.save()
 
-   cart = Cart.objects.get(id=1)
+   user=request.user
+   cart = Cart.objects.get(User=user)
    cart_items= CartItems.objects.filter(Cart=cart)
 
    context ={
@@ -65,8 +66,8 @@ def show_cart(request):
    return render(request, "index.html", context)
 
 def order(request):
-     cart = Cart.objects.get(id=1)
-
+     user=request.user
+     cart = Cart.objects.get(User=user)
      cart_items= CartItems.objects.filter(Cart=cart)
 
      if cart_items:
@@ -87,7 +88,8 @@ def order(request):
      return render(request, "order_success.html")
 
 def order_history(request):
-    orders = Order.objects.filter(User= None)
+    
+    orders = Order.objects.filter(User=None)
 
     context = {
        "orders": orders,
