@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="/shop/store/" class="btn btn-primary">
+   All
+</a>
+
+
+{%for category in categories%}
+<a href="/shop/store/show_category/{{category.id}}" class ="btn btn-outline-primary">
+        {{category.name}}
+</a>
+{%endfor%}
+ <div class="row">
+    {% for store in stores %}
+    <div class="col-lg-4">
+    
+    
+    <img class="thumbnail" src="{{store.image}}"  width="300px" height="300px">
+    <div class="box-element product">       
+            <h6><strong>Code: {{store.code}}</strong></h6>
+            <h6><strong>Product: {{store.name}}</strong></h6>
+            <h6><strong>Date release: {{store.date}}</strong></h6>
+            
+            <a href="/shop/store/details/{{store.id}}"  class="btn btn-outline-secondary add-btn">Details</a>
+            <a href="/cart/add_to_cart/{{store.id}}" class="btn btn-outline-secondary add-btn" >Add to cart</a>
+          
+            <h4 style="display: inline-block; float: right"><strong>${{store.price}}</strong></h4>
+            <hr>
+       
+    </div>
+    
+    </div>
+    {% endfor %} 
+</div>  
+ 
+{% endblock content%}   
